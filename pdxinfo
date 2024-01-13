@@ -1,0 +1,7 @@
+name=Test Game
+author=Ted Conn
+description=A dumb test
+bundleID=com.tedconn.test
+version=0.1
+buildNumber=100
+imagePath=SystemAssets

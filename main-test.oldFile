@@ -1,6 +1,8 @@
 import "CoreLibs/sprites"
 import "CoreLibs/graphics"
 
+-- [[ local states = require("states")
+print(type(require))
 playdate.display.setRefreshRate(20)
 
 local gfx = playdate.graphics
@@ -14,46 +16,36 @@ gfx.setColor(gfx.kColorWhite)
 gfx.fillRect(0, 0, screenWidth, screenHeight)
 
 -- ! game states
-local kGameState = {getReady = 0, dumbbell = 1, musclePopped = 2}
-local currentState = kGameState.getReady
+local states = require("states")
 
 -- ! constants
 local kDumbbellMeterWidth = screenWidth - 20
 
 -- crank position stuff
-local lastCrankPosition = playdate.getCrankPosition()
+--[[ local lastCrankPosition = playdate.getCrankPosition()
 local rotationCounter = 0  -- Counts complete rotations
-local ignoreLastCrankPosition = false
+local ignoreLastCrankPosition = false ]]--
 
 -- ! setup sprites
-
 local titleSprite = spritelib.new()
 titleSprite:setImage(gfx.image.new('images/getReady'))
 titleSprite:moveTo(screenWidth / 2, screenHeight / 2.5)
 titleSprite:setZIndex(950)
 titleSprite:addSprite()
 
-local function init()
-	print("init game")
-	currentState = kGameState.getReady
-	titleSprite:setImage(gfx.image.new('images/getReady'))
-	titleSprite:setVisible(true)
+function playdata.update()
+	gfx.clear()
+	local currentState = states.getCurrentState()
+	if currentState and currentState.update then
+		currentState:update()
+	end
 end
 
-local function startGame()
-	print("play dumbbells")
-	titleSprite:setVisible(false)
-	currentState = kGameState.dumbbell
-end
 
-local function gameOver()
-	ignoreLastCrankPosition = true -- this is a hack
-	currentState = kGameState.musclePopped
-	titleSprite:setImage(gfx.image.new('images/gameOver'))
-	titleSprite:setVisible(true)
-end
+
 
 -- main update function
+--[[
 function playdate.update()
 	print(rotationCounter)
 	gfx.clear() -- Clear the screen each frame
@@ -102,18 +94,17 @@ function playdate.update()
 		spritelib.update();
 	end
 end
+]]--
 
 function playdate.AButtonUp()
-
-	if currentState == kGameState.getReady then
-		startGame()
+	if states.getCurrentState() == states.getReady then
+		states.changeState(states.dumbbell)
 	end
 end
 
 function playdate.BButtonUp()
-
-	if currentState == kGameState.musclePopped then
-		init()
+	if states.getCurrentState() == states.musclePulled then
+		states.changeState(states.getReady)
 	end
 end
 

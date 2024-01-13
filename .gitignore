@@ -1,3 +1,6 @@
+.DS_Store
+*.pdx
+
 # Compiled Lua sources
 luac.out
 
